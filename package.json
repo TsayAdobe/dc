@@ -7,7 +7,7 @@
     "test": "npm run wtr ; npm run jest",
     "wtr": "wtr \"./test/**/*.test.(js|html)\" --node-resolve --port=2000 --coverage --concurrent-browsers 4",
     "jest": "jest --coverage --coverageDirectory=coverage/jest",
-    "test:watch": "npm run wtr -- --watch",
+    "wtr:watch": "npm run wtr -- --watch",
     "lint": "npm run lint:js && npm run lint:css",
     "lint:js": "eslint .",
     "lint:css": "stylelint 'blocks/**/*.css' 'styles/*.css'"
@@ -45,6 +45,7 @@
     "bowser": "^2.11.0"
   },
   "jest": {
-    "testRegex": "\\.jest\\.(js|jsx)$"
+    "testRegex": "\\.jest\\.(js|jsx)$",
+    "collectCoverageFrom": [ "acrobat/**/*.js" ]
   }
 }
