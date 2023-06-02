@@ -2,6 +2,7 @@ name: Unit Tests
 on:
   push:
     branches:
+      - MWPW-129255
       - stage
       - main
   pull_request:
