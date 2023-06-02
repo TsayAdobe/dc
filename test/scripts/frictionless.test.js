@@ -1,1 +1,1 @@
-const { init } = await import('../../acrobat/scripts/frictionless');
+const { init } = import('../../acrobat/scripts/frictionless');

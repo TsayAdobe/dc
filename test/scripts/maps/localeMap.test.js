@@ -1,1 +1,1 @@
-const { localeMap } = import('../../../acrobat/scripts/maps/localeMap');
+const { localeMap } = await import('../../../acrobat/scripts/maps/localeMap');

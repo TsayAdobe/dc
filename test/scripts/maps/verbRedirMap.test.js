@@ -1,1 +1,1 @@
-const { verbRedirMap } = import('../../../acrobat/scripts/maps/localeMap');
+const { verbRedirMap } = await import('../../../acrobat/scripts/maps/verbRedirMap');
