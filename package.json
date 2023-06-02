@@ -49,6 +49,7 @@
     "testRegex": "\\.jest\\.(js|jsx)$",
     "collectCoverageFrom": [
       "acrobat/**/*.js"
-    ]
+    ],
+    "coverageProvider": "v8"
   }
 }
