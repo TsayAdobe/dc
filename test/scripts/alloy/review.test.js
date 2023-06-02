@@ -1,0 +1,1 @@
+const { init } = await import('../../../acrobat/scripts/alloy/review');

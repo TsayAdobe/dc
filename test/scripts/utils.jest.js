@@ -16,6 +16,7 @@ describe('Test utils.js', () => {
     );    
     const libs = setLibs('/libs');
     expect(libs).toBe('/libs');
+    expect(getLibs()).toBe('/libs');
   });
 
   it('tests setLibs for stage', async () => {
@@ -34,5 +35,14 @@ describe('Test utils.js', () => {
     );    
     const libs = setLibs('/libs');
     expect(libs).toBe('http://localhost:6456/libs');
+  });
+
+  it('tests setLibs for milolibs repo', async () => {
+    delete window.location;
+    window.location = new URL(
+      'https://www.stage.adobe.com?milolibs=main--milo--tsayadobe'
+    );    
+    const libs = setLibs('/libs');
+    expect(libs).toBe('https://main--milo--tsayadobe.hlx.page/libs');
   });   
 });

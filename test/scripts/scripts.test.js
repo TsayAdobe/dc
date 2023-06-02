@@ -1,0 +1,1 @@
+const { scripts } = await import('../../acrobat/scripts/scripts');
