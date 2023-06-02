@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "Website foundation technology.",
   "scripts": {
-    "test": "npm run wtr ; npm run jest ; lcov -a coverage/wtr/lcov.info -a coverage/jest/lcov.info -o coverage/lcov.info",
+    "test": "npm run wtr ; npm run jest ; lcov -a coverage/jest/lcov.info -a coverage/wtr/lcov.info -o coverage/lcov.info",
     "wtr": "wtr \"./test/**/*.test.(js|html)\" --node-resolve --port=2000 --coverage --concurrent-browsers 4",
     "jest": "jest --coverage --coverageDirectory=coverage/jest",
     "wtr:watch": "npm run wtr -- --watch",
