@@ -7,7 +7,7 @@ export default {
     reportDir: 'coverage/wtr'
   },
   reporters: [
-    defaultReporter({ reportTestResults: false, reportTestProgress: true }),
+    defaultReporter({ reportTestResults: true, reportTestProgress: true }),
   ],
   plugins: [importMapsPlugin({})],
 };
