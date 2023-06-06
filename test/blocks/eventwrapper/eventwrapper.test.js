@@ -1,20 +1,20 @@
 import * as sinon from 'sinon';
 import { expect } from '@esm-bundle/chai';
-
 import { readFile } from '@web/test-runner-commands';
-import Sinon from 'sinon';
 
-document.head.innerHTML = await readFile({ path: './mocks/head.html' });
-document.body.innerHTML = await readFile({ path: './mocks/body.html' });
+const head = await readFile({ path: './mocks/head.html' });
+const body = await readFile({ path: './mocks/body.html' });
 const { default: init } = await import(
   '../../../acrobat/blocks/eventwrapper/eventwrapper'
 );
 
 describe('eventwrapper block', () => {
+  let browserName = 'Chrome';
+
   before(() => {
     window.bowser = {
       getParser: () => ({
-        getBrowserName: () => 'Chrome',
+        getBrowserName: () => browserName,
         parsedResult: {
           platform: {
             type: 'desktop',
@@ -46,8 +46,20 @@ describe('eventwrapper block', () => {
         });
       },
     };
-    const blocks = document.body.querySelectorAll('.eventwrapper');
-    blocks.forEach((x) => init(x));
+    window.chrome = {
+      runtime: {
+        sendMessage: function (message, version, callback) {
+          callback(false);
+        },
+      },
+    };
+    window._satellite = {
+      track: sinon.stub(),
+    };
+  });
+
+  afterEach(() => {
+    sinon.restore();
   });
 
   it('handles Bowser:Ready', async function () {
@@ -55,59 +67,86 @@ describe('eventwrapper block', () => {
     window.dispatchEvent(new CustomEvent('Bowser:Ready'));
   });
 
-  it('handles DC_Hosted:Ready', async function () {
-    this.timeout(5000);
+  it('shows the ext modal on Chrome when conversion complete and preview displayed', async function () {
+    document.head.innerHTML = head;
+    document.body.innerHTML = body;
+    window.dc_hosted.listeners = [];
+    window.modalDisplayed = false;
     const blocks = document.body.querySelectorAll('.eventwrapper');
+    blocks.forEach((x) => init(x));
+    this.timeout(5000);
     window.dispatchEvent(new CustomEvent('DC_Hosted:Ready'));
     expect(window.dc_hosted.listeners).to.have.lengthOf(blocks.length);
+    window.dc_hosted.dispatchEvent('conversion-complete', {});
+    expect(window.modalDisplayed).to.be.true;
+
+    window.modalDisplayed = false;
+    window.dc_hosted.dispatchEvent('preview-displayed', {});
+    expect(window.modalDisplayed).to.be.true;
   });
 
-  it('inits the eventwrapper', async function () {
-    const block = document.body.querySelector('.eventwrapper');
-    expect(block.dataset.eventName).to.be.equal('onload');
-  });
+  it('shows the ext modal on MS Edge when conversion complete and preview displayed', async function () {
+    browserName = 'Microsoft Edge';
+    document.head.innerHTML = head;
+    document.body.innerHTML = body;
+    window.dc_hosted.listeners = [];
+    window.modalDisplayed = false;
+    window.chrome = {
+      runtime: {},
+    };
+    const blocks = document.body.querySelectorAll('.eventwrapper');
+    blocks.forEach((x) => init(x));
+    window.dispatchEvent(new CustomEvent('DC_Hosted:Ready'));
+    window.dc_hosted.dispatchEvent('conversion-complete', {});
+    expect(window.modalDisplayed).to.be.true;
 
-  it('handles file-upload-start', async function () {
-    window.dc_hosted.dispatchEvent('file-upload-start', {});
+    window.modalDisplayed = false;
+    window.dc_hosted.dispatchEvent('preview-displayed', {});
+    expect(window.modalDisplayed).to.be.true;
   });
 
   it('handles processing-start', async function () {
     window.dc_hosted.dispatchEvent('processing-start', {});
+    expect(document.body.dataset.currentEvent).to.eql('start');
+  });
+
+  it('handles file-upload-start', async function () {
+    window.dc_hosted.dispatchEvent('file-upload-start', {});
+    expect(document.body.dataset.currentEvent).to.eql('upload');
   });
 
   it('handles file-upload-complete', async function () {
     window.dc_hosted.dispatchEvent('file-upload-complete', {});
+    expect(document.body.dataset.currentEvent).to.eql('uploadcomplete');
   });
 
   it('handles processing-cancelled', async function () {
     window.dc_hosted.dispatchEvent('processing-cancelled', {});
-  });
-
-  it('handles processing-complete', async function () {
-    window.dc_hosted.dispatchEvent('processing-complete', {});
-  });
-
-  it('handles download-start', async function () {
-    window.dc_hosted.dispatchEvent('download-start', {});
-  });
-
-  it('handles conversion-complete', async function () {
-    window.dc_hosted.dispatchEvent('conversion-complete', {});
-  });
-
-  it('handles preview-generating', async function () {
-    window.dc_hosted.dispatchEvent('preview-generating', {});
-  });
-
-  it('handles dropzone-displayed', async function () {
-    window.dc_hosted.dispatchEvent('dropzone-displayed', {});
-  });
-
-  it('handles preview-displayed', async function () {
-    window.dc_hosted.dispatchEvent('preview-displayed', {});
+    expect(document.body.dataset.currentEvent).to.eql('cancel');
   });
 
   it('handles try-another-file-start', async function () {
     window.dc_hosted.dispatchEvent('try-another-file-start', {});
+    expect(window.modalDisplayed).to.be.false;  
+  });
+
+  it('handles preview-generating', async function () {
+    window.dc_hosted.dispatchEvent('preview-generating', {});
+    expect(document.body.dataset.currentEvent).to.eql('preview');   
+  });
+
+  it('handles preview-displayed', async function () {
+    window.dc_hosted.dispatchEvent('preview-displayed', {});
+    expect(document.body.dataset.currentEvent).to.eql('preview');
+  });
+
+  it('handles dropzone-displayed', async function () {
+    window.dc_hosted.dispatchEvent('dropzone-displayed', {});
+    expect(document.body.dataset.currentEvent).to.be.undefined;
+  });
+
+  it('handles download-start', async function () {
+    window.dc_hosted.dispatchEvent('download-start', {});
+    expect(document.body.dataset.currentEvent).to.eql('download');
   });
 });
