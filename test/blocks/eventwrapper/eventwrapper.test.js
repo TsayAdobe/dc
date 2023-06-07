@@ -59,6 +59,10 @@ describe('eventwrapper block', () => {
   });
 
   afterEach(() => {
+    sinon.resetHistory();
+  });
+
+  after(() => {
     sinon.restore();
   });
 
@@ -74,7 +78,6 @@ describe('eventwrapper block', () => {
     window.modalDisplayed = false;
     const blocks = document.body.querySelectorAll('.eventwrapper');
     blocks.forEach((x) => init(x));
-    this.timeout(5000);
     window.dispatchEvent(new CustomEvent('DC_Hosted:Ready'));
     expect(window.dc_hosted.listeners).to.have.lengthOf(blocks.length);
     window.dc_hosted.dispatchEvent('conversion-complete', {});

@@ -16,11 +16,15 @@ describe('Test scripts.js', () => {
   });
 
   afterEach(() => {
-    clock.restore();
+    sinon.resetHistory();
   });
 
+  after(() => {
+    clock.restore();
+    sinon.restore();
+  }); 
+
   it('triggers events', async function () {
-    this.timeout(5000);
     window.adobeIMS = {
       initialized: true,
     };
@@ -29,13 +33,9 @@ describe('Test scripts.js', () => {
     window._satellite = {
       track: sinon.spy(),
     };
-    clock.tick(2000);
-    //sinon.spy(window, 'dispatchEvent');
-    //await delay(1100);
-    //const calls = window.dispatchEvent.getCalls();
-    //console.log(calls.length);
-    //console.log(calls[0]);
-    //console.log(calls[1]);
-    //console.log(calls[2]);
+
+    clock.tick(1100);
+  
+    expect(window.bowser).to.be.true;
   });
 });
