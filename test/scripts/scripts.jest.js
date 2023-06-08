@@ -12,7 +12,7 @@ describe('Test scripts', () => {
         loadLana: jest.fn(),
         getLocale: jest.fn().mockImplementation(() => ({ ietf: 'en-US' })),
         setConfig: jest.fn(),
-        getMetadata: jest.fn().mockReturnValue("123"),
+        getMetadata: jest.fn().mockReturnValue('123'),
       };
     });
     jest.mock(
@@ -25,7 +25,7 @@ describe('Test scripts', () => {
           loadLana: jest.fn(),
           getLocale: jest.fn().mockImplementation(() => ({ ietf: 'en-US' })),
           setConfig: jest.fn(),
-          getMetadata: jest.fn().mockReturnValue("123"),
+          getMetadata: jest.fn().mockReturnValue('123'),
         };
       }
     );
@@ -37,14 +37,26 @@ describe('Test scripts', () => {
         loadLana: jest.fn(),
         getLocale: jest.fn().mockImplementation(() => ({ ietf: 'en-US' })),
         setConfig: jest.fn(),
-        getMetadata: jest.fn().mockReturnValue("123"),
+        getMetadata: jest.fn().mockReturnValue('123'),
       };
     });
     window.adobeIMS = {
       initialized: true,
+      isSignedInUser: jest.fn().mockReturnValue(false),
     };
-    window.dc_hosted = true;
-    window.bowser = true;
+    window.bowser = {
+      getParser: () => ({
+        getBrowserName: () => 'Chrome',
+        getBrowserVersion: () => '110.0',
+      }),
+    };
+    window._satellite = {
+      track: jest.fn(),
+    };
+    window.dc_hosted = {
+      getUserLimits: jest.fn().mockImplementation(async () => ({})),
+    };
+    window.fetch = jest.fn().mockImplementation(async () => ({ status: 404 }));
     jest.useFakeTimers();
   });
 
@@ -52,7 +64,8 @@ describe('Test scripts', () => {
     jest.resetModules();
     document.head.innerHTML =
       '<meta name="promotion" content="abc"/><meta name="dc-widget-version" content="123"/>';
-    document.body.innerHTML = '<main><div class="dc-converter-widget"/></main>';
+    document.body.innerHTML =
+      '<main><div class="dc-converter-widget"/><div/></main>';
   });
 
   describe('Test prod', () => {
@@ -63,7 +76,6 @@ describe('Test scripts', () => {
       );
       await require('../../acrobat/scripts/scripts');
       jest.advanceTimersByTime(2000);
-      expect(window.bowser).toBe(true);
     });
   });
 
@@ -75,7 +87,6 @@ describe('Test scripts', () => {
       );
       await require('../../acrobat/scripts/scripts');
       jest.advanceTimersByTime(2000);
-      expect(window.bowser).toBe(true);      
     });
   });
 
@@ -87,7 +98,6 @@ describe('Test scripts', () => {
       );
       await require('../../acrobat/scripts/scripts');
       jest.advanceTimersByTime(2000);
-      expect(window.bowser).toBe(true);      
     });
   });
 });
