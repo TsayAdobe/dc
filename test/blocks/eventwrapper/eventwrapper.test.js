@@ -76,13 +76,13 @@ describe('eventwrapper block', () => {
     document.head.innerHTML = head;
     document.body.innerHTML = body;
     window.dc_hosted.listeners = [];
+    localStorage.removeItem('fricBrowExt');
     window.modalDisplayed = false;
     const blocks = document.body.querySelectorAll('.eventwrapper');
     blocks.forEach((x) => init(x));
     window.dispatchEvent(new CustomEvent('DC_Hosted:Ready'));
     expect(window.dc_hosted.listeners).to.have.lengthOf(blocks.length);
     window.dc_hosted.dispatchEvent('conversion-complete', {});
-    await delay(100);
     expect(window.modalDisplayed).to.be.true;
 
     window.modalDisplayed = false;
@@ -95,6 +95,7 @@ describe('eventwrapper block', () => {
     document.head.innerHTML = head;
     document.body.innerHTML = body;
     window.dc_hosted.listeners = [];
+    localStorage.removeItem('fricBrowExt');  
     window.modalDisplayed = false;
     window.chrome = {
       runtime: {},
@@ -103,7 +104,6 @@ describe('eventwrapper block', () => {
     blocks.forEach((x) => init(x));
     window.dispatchEvent(new CustomEvent('DC_Hosted:Ready'));
     window.dc_hosted.dispatchEvent('conversion-complete', {});
-    await delay(100);
     expect(window.modalDisplayed).to.be.true;
 
     window.modalDisplayed = false;
