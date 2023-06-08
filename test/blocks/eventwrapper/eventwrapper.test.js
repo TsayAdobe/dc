@@ -1,6 +1,7 @@
 import * as sinon from 'sinon';
 import { expect } from '@esm-bundle/chai';
 import { readFile } from '@web/test-runner-commands';
+import { delay } from '../../helpers/waitfor.js';
 
 const head = await readFile({ path: './mocks/head.html' });
 const body = await readFile({ path: './mocks/body.html' });
@@ -81,6 +82,7 @@ describe('eventwrapper block', () => {
     window.dispatchEvent(new CustomEvent('DC_Hosted:Ready'));
     expect(window.dc_hosted.listeners).to.have.lengthOf(blocks.length);
     window.dc_hosted.dispatchEvent('conversion-complete', {});
+    await delay(100);
     expect(window.modalDisplayed).to.be.true;
 
     window.modalDisplayed = false;
@@ -101,6 +103,7 @@ describe('eventwrapper block', () => {
     blocks.forEach((x) => init(x));
     window.dispatchEvent(new CustomEvent('DC_Hosted:Ready'));
     window.dc_hosted.dispatchEvent('conversion-complete', {});
+    await delay(100);
     expect(window.modalDisplayed).to.be.true;
 
     window.modalDisplayed = false;
