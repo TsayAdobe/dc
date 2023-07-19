@@ -240,6 +240,39 @@ const CONFIG = {
   }, 1000);
 
   loadScript('/acrobat/scripts/bowser.js');
+
+  const loadLazyLotties = () => {  
+    const lotties = document.querySelectorAll('picture img[data-title$=".json"]');
+    //const lotties = document.querySelectorAll('picture img[alt$=".json"]');
+    lotties.forEach(async (lottie) => {
+      const picture = lottie.parentElement;
+      const player = 'lottie-player';
+      const lottiePlayer = document.createElement(player);
+      lottiePlayer.setAttribute('src', lottie.dataset.title);
+      //lottiePlayer.setAttribute('src', lottie.alt);
+      lottiePlayer.setAttribute('background', 'transparent');
+      lottiePlayer.setAttribute('speed', '1');
+      lottiePlayer.setAttribute('loop', '');
+      lottiePlayer.setAttribute('autoplay', '');
+      lottiePlayer.setAttribute('style', `width: ${lottie.width}px; height: ${lottie.height}px;`);
+      picture.parentElement.replaceChild(lottiePlayer, picture);
+    });
+    if (lotties.length) {
+      import('../deps/lottie-player.js');
+    }
+  };
+
+  const triggerLottieLoader = () => {
+    loadLazyLotties();
+    clearTimeout(loadLazyLottiesTimer);
+    uiEvents.forEach((event) => {
+      window.removeEventListener(event, triggerLottieLoader, { passive: true });
+    });
+  };
+
+  const loadLazyLottiesTimer = setTimeout(loadLazyLotties, 5*1000);
+  const uiEvents = ["mouseover", "keydown", "touchstart", "touchmove", "wheel"];
+  uiEvents.forEach((event) => window.addEventListener(event, triggerLottieLoader, {passive: true}));
 }());
 
 // Bowser Ready
