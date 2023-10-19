@@ -55,6 +55,7 @@ const connectSrc = [
   '*.hlx.live',
   'cdn.linkedin.oribi.io',
   'adobedc.demdex.net/',
+  'main--dc--tsayadobe.hlx.reviews',
   ';',
 ];
 

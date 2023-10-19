@@ -104,6 +104,15 @@
       "passConfig": true,
       "paletteRect": "top: auto; bottom: 20px; left: 20px; height: 498px; width: 460px;",
       "includePaths": [ "**.docx**", "**.xlsx**" ]
-    }
+    },
+    {
+      "id": "move-to-review",
+      "title": "Move to Review",
+      "environments": [
+        "dev",
+        "preview"
+      ],
+      "event": "move-to-review"
+    }    
   ]
 }
