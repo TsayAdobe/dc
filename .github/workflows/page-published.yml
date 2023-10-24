@@ -15,7 +15,7 @@ jobs:
       - name: Download artifact
         uses: dawidd6/action-download-artifact@v2
         with:
-          workflow: page-published.yml
+          workflow: Page Published
           workflow_conclusion: success
           name: base-query-index-cache
           if_no_artifact_found: ignore
