@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import {setLibs} from "./utils.js";
+import {setLibs} from "../../acrobat/scripts/utils.js";
 const miloLibs = setLibs('/libs');
 const { getMetadata } = await import(`${miloLibs}/utils/utils.js`);
  
