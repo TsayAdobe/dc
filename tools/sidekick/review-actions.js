@@ -1,6 +1,8 @@
 /* eslint-disable no-console */
-import { getMetadata } from '../../acrobat/scripts/lib-franklin.js';
-
+import {setLibs} from "./utils.js";
+const miloLibs = setLibs('/libs');
+const { getMetadata } = await import(`${miloLibs}/utils/utils.js`);
+ 
 export const SidekickState = {};
 
 export function getReviewEnv() {

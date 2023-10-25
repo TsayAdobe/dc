@@ -264,24 +264,6 @@ const CONFIG = {
 }());
 
 async function loadLazy() {
-  // const main = doc.querySelector('main');
-  // await loadBlocks(main);
-
-  // const { hash } = window.location;
-  // const element = hash ? doc.getElementById(hash.substring(1)) : false;
-  // if (hash && element) element.scrollIntoView();
-
-  // if (!getMetadata('template')) {
-  //   loadHeader(doc.querySelector('header'));
-  //   loadFooter(doc.querySelector('footer'));
-  // }
-
-  // loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
-  // addFavIcon(`${window.hlx.codeBasePath}/styles/favicon.svg`);
-  // sampleRUM('lazy');
-  // sampleRUM.observe(main.querySelectorAll('div[data-block-name]'));
-  // sampleRUM.observe(main.querySelectorAll('picture > img'));
-
   if (window.location.hostname === 'localhost'
     || window.location.hostname.endsWith('.hlx.page')
     || window.location.hostname.endsWith('.hlx.reviews')
@@ -350,10 +332,6 @@ const { ietf } = getLocale(locales);
 
   setConfig({ ...CONFIG, miloLibs });
   loadLana({ clientId: 'dxdc' });
-
-  document.addEventListener('milo:deferred', ()=> {
-    loadLazy()
-  });
   
   // get event back form dc web and then load area
   await loadArea(document, false);
@@ -384,4 +362,8 @@ const { ietf } = getLocale(locales);
     const { default: replacePlaceholdersWithImages } = await import('./imageReplacer.js');
     replacePlaceholdersWithImages(document);
   }
+
+  document.addEventListener('milo:deferred', () => {
+    loadLazy()
+  });  
 }());
