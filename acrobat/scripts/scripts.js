@@ -333,6 +333,10 @@ const { ietf } = getLocale(locales);
   setConfig({ ...CONFIG, miloLibs });
   loadLana({ clientId: 'dxdc' });
   
+  document.addEventListener('milo:deferred', () => {
+    loadLazy()
+  }); 
+  
   // get event back form dc web and then load area
   await loadArea(document, false);
 
@@ -362,8 +366,4 @@ const { ietf } = getLocale(locales);
     const { default: replacePlaceholdersWithImages } = await import('./imageReplacer.js');
     replacePlaceholdersWithImages(document);
   }
-
-  document.addEventListener('milo:deferred', () => {
-    loadLazy()
-  });  
 }());
