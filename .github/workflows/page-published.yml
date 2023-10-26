@@ -52,7 +52,7 @@ jobs:
               workflow_id: 'test-page-published.yml',
               ref: 'main',
               inputs: {
-                test_url: 'https://www.adobe.com${{ steps.get-added-page.outputs.added_page }}'
+                test_url: ${{ 'https://www.adobe.com' + steps.get-added-page.outputs.added_page }}
               },              
             })
       - name: Trigger DC Workflow for Changed Page
@@ -67,6 +67,6 @@ jobs:
               workflow_id: 'test-page-published.yml',
               ref: 'main',
               inputs: {
-                test_url: 'https://www.adobe.com${{ steps.get-changed-page.outputs.changed_page }}'
+                test_url: ${{ 'https://www.adobe.com' + steps.get-changed-page.outputs.changed_page }}
               },              
             })                          
