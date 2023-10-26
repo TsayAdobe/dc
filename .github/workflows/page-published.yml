@@ -31,11 +31,11 @@ jobs:
       - id: get-added-page
         run: |
           page=$( jq '.added[0]' diff.json )
-          echo "::set-output name=added_page::$page"
+          echo "added_page=$page" >> $GITHUB_OUTPUT
       - id: get-changed-page
         run: |
           page=$( jq '.changed[0]' diff.json )
-          echo "::set-output name=changed_page::$page"             
+          echo "changed_page=$page" >> $GITHUB_OUTPUT          
       - name: Slack Notification
         run: node .github/scripts/notify_slack.js diff.json
         env:
