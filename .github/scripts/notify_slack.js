@@ -68,7 +68,7 @@ async function main() {
     if (response.ok) {
       return response.text();
     } else {
-      throw new Error('Something went wrong');
+      res.text().then(text => { throw new Error(text) });
     }
   });
 }
