@@ -58,9 +58,6 @@ async function main() {
 
   fetch(`https://hooks.slack.com/services/${process.env.SLACK_WEBHOOK}`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     body: JSON.stringify({
       text: message,
     }),
