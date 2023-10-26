@@ -28,21 +28,30 @@ async function main() {
 
   if (diffs.added.length > 0) {
     message += `*Added: ${diffs.added.length}*\n`;
-    message += diffs.added
+    message += diffs.added.slice(0, 10)
       .map((x) => `* <https://www.adobe.com${x}|${x}>`)
       .join('\n');
+    if (diffs.added.length > 10) {
+      message += '\n* more...'
+    }
   }
   if (diffs.removed.length > 0) {
     message += `*Removed: ${diffs.removed.length}*\n`;
-    message += diffs.removed
+    message += diffs.removed.slice(0, 10)
       .map((x) => `* <https://www.adobe.com${x}|${x}>`)
       .join('\n');
+    if (diffs.removed.length > 10) {
+      message += '\n* more...'
+    }    
   }
   if (diffs.changed.length > 0) {
     message += `*Changed: ${diffs.changed.length}*\n`;
-    message += diffs.changed
+    message += diffs.changed.slice(0, 10)
       .map((x) => `* <https://www.adobe.com${x}|${x}>`)
       .join('\n');
+    if (diffs.changed.length > 10) {
+      message += '\n* more...'
+    }       
   }
 
   console.log(message);
