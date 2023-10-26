@@ -41,7 +41,7 @@ jobs:
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
       - name: Trigger DC Workflow for Added Page
-        if: ${{ steps.get-added-page.outputs.added_page }}
+        if: ${{ steps.get-added-page.outputs.added_page != 'null' }}
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.DC_PAT }}
@@ -56,7 +56,7 @@ jobs:
               },              
             })
       - name: Trigger DC Workflow for Changed Page
-        if: ${{ steps.get-changed-page.outputs.changed_page }}
+        if: ${{ steps.get-changed-page.outputs.changed_page != 'null' }}
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.DC_PAT }}
