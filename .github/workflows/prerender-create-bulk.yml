@@ -7,13 +7,6 @@ on:
         description: 'GitHub gist with URLs to prerender'
         required: true
         type: string
-      layout:
-        description: 'Layout to prerender'
-        required: true
-        type: choice
-        options:
-          - desktop
-          - mobile
       namespace:
         description: 'Namespace to write to'
         required: true
@@ -39,6 +32,7 @@ jobs:
         with:
           sparse-checkout: |
             tools/prerender/prerender.js
+            tools/prerender/prerender-gist.js
             package-lock.json
             package.json
 
@@ -59,18 +53,9 @@ jobs:
         run: |
           echo "${EDGERC}" > ~/.edgerc
 
-      - name: Download and process gist
+      - name: Process gist and create prerenders
         run: |
-          # Download the gist content
-          curl -s "https://api.github.com/gists/${{ inputs.gist }}" | jq -r '.files[].content' > urls.txt
-          
-          # Process each URL
-          while IFS= read -r url; do
-            if [ -n "$url" ]; then
-              echo "Processing URL: $url"
-              node tools/prerender/prerender.js "$url" --layout ${{ inputs.layout }} --namespace ${{ inputs.namespace }} --group ${{ inputs.group }} --edgekv
-            fi
-          done < urls.txt
+          node tools/prerender/prerender-gist.js "${{ inputs.gist }}" "${{ inputs.namespace }}" "${{ inputs.group }}"
         env:
           USER_AGENT_SUFFIX: ${{ secrets.USER_AGENT_SUFFIX }}
 
