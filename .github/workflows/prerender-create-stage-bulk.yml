@@ -1,4 +1,4 @@
-name: Prerender - Create bulk prerenders from gist
+name: Prerender - Create prerenders for URLs
 
 on:
   workflow_dispatch:
@@ -35,18 +35,16 @@ on:
         default: 'frictionless'
 
 jobs:
-  create-prerenders:
-    runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/playwright:v1.51.1-noble
+  create-prerender:
+    runs-on: [self-hosted, Linux, X64]
       
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
         with:
           sparse-checkout: |
-            tools/prerender/prerender.js
             tools/prerender/prerender-gist.js
+            tools/prerender/prerender.js
 
       - name: Cache dependencies
         id: cache
@@ -65,7 +63,7 @@ jobs:
         run: |
           echo "${EDGERC}" > ~/.edgerc
 
-      - name: Process gist and create prerenders
+      - name: Process URLs
         run: |
           if [[ "${{ inputs.url_or_gist }}" =~ ^[0-9a-f]{32}$ ]]; then
             # If input looks like a gist ID, use prerender-gist.js
@@ -79,4 +77,4 @@ jobs:
 
       - name: Cleanup Akamai credentials
         if: always()
-        run: rm -f ~/.edgerc   
+        run: rm -f ~/.edgerc

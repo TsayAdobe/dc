@@ -44,8 +44,6 @@ jobs:
         with:
           sparse-checkout: |
             tools/prerender/prerender.js
-            package-lock.json
-            package.json
 
       - name: Cache dependencies
         id: cache
