@@ -6,7 +6,7 @@ const path = require('path');
 
 const execAsync = promisify(exec);
 
-async function processGist(gistId, namespace, group) {
+async function processGist(gistId, network, namespace, group) {
   try {
     // Fetch gist content
     const response = await fetch(`https://api.github.com/gists/${gistId}`);
@@ -29,7 +29,7 @@ async function processGist(gistId, namespace, group) {
         console.log(`Processing ${layout} layout`);
         try {
           const { stdout, stderr } = await execAsync(
-            `node ${prerenderPath} "${url}" --layout ${layout} --namespace ${namespace} --group ${group} --edgekv`,
+            `node ${prerenderPath} "${url}" --layout ${layout} --network ${network} --namespace ${namespace} --group ${group} --edgekv`,
           );
           console.log(stdout);
           if (stderr) console.error(stderr);
@@ -50,7 +50,7 @@ async function processGist(gistId, namespace, group) {
 const [gistId, namespace, group] = process.argv.slice(2);
 
 if (!gistId || !namespace || !group) {
-  console.error('Usage: node prerender-gist.js <gist-id> <namespace> <group>');
+  console.error('Usage: node prerender-gist.js <gist-id> <network> <namespace> <group>');
   process.exit(1);
 }
 

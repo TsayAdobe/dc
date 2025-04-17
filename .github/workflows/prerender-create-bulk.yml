@@ -7,6 +7,13 @@ on:
         description: 'GitHub gist with URLs to prerender'
         required: true
         type: string
+      network:
+        description: 'Network to write to'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
       namespace:
         description: 'Namespace to write to'
         required: true
@@ -55,7 +62,7 @@ jobs:
 
       - name: Process gist and create prerenders
         run: |
-          node tools/prerender/prerender-gist.js "${{ inputs.gist }}" "${{ inputs.namespace }}" "${{ inputs.group }}"
+          node tools/prerender/prerender-gist.js "${{ inputs.gist }}" "${{ inputs.network }}" "${{ inputs.namespace }}" "${{ inputs.group }}"
         env:
           USER_AGENT_SUFFIX: ${{ secrets.USER_AGENT_SUFFIX }}
 

@@ -14,6 +14,13 @@ on:
         options:
           - desktop
           - mobile
+      network:
+        description: 'Network to write to'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
       namespace:
         description: 'Namespace to write to'
         required: true
@@ -61,6 +68,10 @@ jobs:
 
       - name: Write EdgeKV Items
         run: |
-          node tools/prerender/prerender.js "${{ inputs.url }}" --layout ${{ inputs.layout }} --namespace ${{ inputs.namespace }} --group ${{ inputs.group }} --edgekv
+          node tools/prerender/prerender.js "${{ inputs.url }}" --layout ${{ inputs.layout }} --network ${{ inputs.network }} --namespace ${{ inputs.namespace }} --group ${{ inputs.group }} --edgekv
         env:
           USER_AGENT_SUFFIX: ${{ secrets.USER_AGENT_SUFFIX }}
+
+      - name: Cleanup Akamai credentials
+        if: always()
+        run: rm -f ~/.edgerc          
