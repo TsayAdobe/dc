@@ -37,7 +37,10 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.testCodeBranch }}
+          sparse-checkout: |
+            tools/prerender/prerender.js
+            package-lock.json
+            package.json
 
       - name: Cache dependencies
         id: cache
@@ -59,3 +62,5 @@ jobs:
       - name: Write EdgeKV Items
         run: |
           node tools/prerender/prerender.js "${{ inputs.url }}" --layout ${{ inputs.layout }} --namespace ${{ inputs.namespace }} --group ${{ inputs.group }} --edgekv
+        env:
+          USER_AGENT_SUFFIX: ${{ secrets.USER_AGENT_SUFFIX }}
