@@ -1,0 +1,79 @@
+name: Prerender - Create bulk prerenders from gist
+
+on:
+  workflow_dispatch:
+    inputs:
+      gist:
+        description: 'GitHub gist with URLs to prerender'
+        required: true
+        type: string
+      layout:
+        description: 'Layout to prerender'
+        required: true
+        type: choice
+        options:
+          - desktop
+          - mobile
+      namespace:
+        description: 'Namespace to write to'
+        required: true
+        type: choice
+        options:
+          - stage
+          - prod
+      group:
+        description: 'Group to write to'
+        required: true
+        type: string
+        default: 'frictionless'
+
+jobs:
+  create-prerenders:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.51.1-noble
+      
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/prerender/prerender.js
+            package-lock.json
+            package.json
+
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: ./node_modules
+          key: modules-${{ hashFiles('package-lock.json') }}-${{ runner.os }}
+
+      - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm ci --ignore-scripts
+
+      - name: Setup Akamai Authentication
+        env:
+          EDGERC: ${{ secrets.EDGERC_EDGEKV }}
+        run: |
+          echo "${EDGERC}" > ~/.edgerc
+
+      - name: Download and process gist
+        run: |
+          # Download the gist content
+          curl -s "https://api.github.com/gists/${{ inputs.gist }}" | jq -r '.files[].content' > urls.txt
+          
+          # Process each URL
+          while IFS= read -r url; do
+            if [ -n "$url" ]; then
+              echo "Processing URL: $url"
+              node tools/prerender/prerender.js "$url" --layout ${{ inputs.layout }} --namespace ${{ inputs.namespace }} --group ${{ inputs.group }} --edgekv
+            fi
+          done < urls.txt
+        env:
+          USER_AGENT_SUFFIX: ${{ secrets.USER_AGENT_SUFFIX }}
+
+      - name: Cleanup Akamai credentials
+        if: always()
+        run: rm -f ~/.edgerc   
