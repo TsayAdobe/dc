@@ -74,6 +74,7 @@ jobs:
             # Otherwise treat as a single URL
             node tools/prerender/prerender.js "${{ inputs.url_or_gist }}" --layout ${{ inputs.layout }} --network ${{ inputs.network }} --namespace ${{ inputs.namespace }} --group ${{ inputs.group }} --edgekv
           fi
+        shell: bash
         env:
           USER_AGENT_SUFFIX: ${{ secrets.USER_AGENT_SUFFIX }}
 

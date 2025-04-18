@@ -47,11 +47,11 @@ async function processGist(gistId, network, namespace, group) {
 }
 
 // Get command line arguments
-const [gistId, namespace, group] = process.argv.slice(2);
+const [gistId, network, namespace, group] = process.argv.slice(2);
 
-if (!gistId || !namespace || !group) {
+if (!gistId || !network || !namespace || !group) {
   console.error('Usage: node prerender-gist.js <gist-id> <network> <namespace> <group>');
   process.exit(1);
 }
 
-processGist(gistId, namespace, group);
+processGist(gistId, network, namespace, group);
