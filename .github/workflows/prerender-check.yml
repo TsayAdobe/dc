@@ -51,3 +51,9 @@ jobs:
           fi
         env:
           USER_AGENT_SUFFIX: ${{ secrets.USER_AGENT_SUFFIX }}
+      
+      - name: Upload prerender artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: prerender-screenshots
+          path: tools/prerender/*.png
