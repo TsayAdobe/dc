@@ -14,6 +14,10 @@ on:
         options:
           - desktop
           - mobile
+      hostsHack:
+        description: 'Hosts File Hack'
+        required: false
+        type: string
 
 jobs:
   check-prerender:
@@ -22,6 +26,12 @@ jobs:
       image: mcr.microsoft.com/playwright:v1.51.1-noble    
       
     steps:
+      - name: Hosts file hack
+        if: "${{ github.event.inputs.hostsHack != '' }}"
+        run: |
+          echo ${{ inputs.hostsHack }} | sudo tee -a /etc/hosts
+          cat /etc/hosts
+          
       - name: Check out repository
         uses: actions/checkout@v4
         with:
@@ -57,3 +67,9 @@ jobs:
         with:
           name: prerender-screenshots
           path: tools/prerender/*.png
+
+      - name: Cleanup hosts file hack
+        if: always() && "${{ github.event.inputs.hostsHack != '' }}"
+        run: |
+          sudo sed -i "/${{ github.event.inputs.hostsHack }}/d" /etc/hosts
+          cat /etc/hosts
